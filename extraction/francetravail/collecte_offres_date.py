@@ -3,6 +3,7 @@ import json
 import time
 import os
 from datetime import datetime, timedelta
+import pytz
 
 MAX_OFFRES = 3149
 export_json = []
@@ -15,6 +16,8 @@ FRANCETRAVAIL_CLE_SECRETE = os.getenv("FRANCETRAVAIL_CLE_SECRETE")
 
 SEARCH_URL = f"{FRANCETRAVAIL_HOST}/partenaire/offresdemploi/v2/offres/search"
 REFERENTIEL_URL = f"{FRANCETRAVAIL_HOST}/partenaire/offresdemploi/v2/referentiel"
+
+parisTz = pytz.timezone("Europe/Paris") 
 
 def authenticate():
 
@@ -227,10 +230,10 @@ if __name__ == '__main__':
     total_offres = get_nb_total_offres(url=url, access_token=access_token)
 
     debut_total = time.time()
-    date_debut = datetime.now()
+    date_debut = datetime.now(parisTz)
 
     log = {
-        "date_debut": date_debut.strftime('%d/%m/%Y %H:%M:%S')
+        "dt_deb_collecte": date_debut.strftime('%d/%m/%Y %H:%M:%S')
     }
 
     print(f"\n\n{date_debut.strftime('%d/%m/%Y %H:%M:%S')}: démarrage collecte de {total_offres} offres d'emploi depuis francetravail.io\n\n")
@@ -258,8 +261,7 @@ if __name__ == '__main__':
     duree_totale = ('0' + str(hours) if hours < 10 else str(hours)) + ':' + ('0' + str(minutes) if minutes < 10 else str(minutes))
 
     log['date_creation'] = DATE_CREATION
-    log['dt_deb_collecte'] = date_debut.strftime('%d/%m/%Y %H:%M:%S')
-    log['dt_fin_collecte'] = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+    log['dt_fin_collecte'] = datetime.now(parisTz).strftime('%d/%m/%Y %H:%M:%S')
     log['total_offres'] = total_offres
     log['total_offres_collecte'] = len(export_json)
     log['duree_totale'] = duree_totale
