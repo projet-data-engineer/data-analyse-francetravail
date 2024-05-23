@@ -1,10 +1,15 @@
 import os
 import duckdb
 
-DB_FILE = os.getenv('DB_FILE')
-JSON_FILE = os.getenv('JSON_FILE')
+DB_PATH = os.getenv('DB_PATH')
+DUCKDB_FILE = os.getenv('DUCKDB_FILE')
+DATE_CREATION = os.getenv("DATE_CREATION")
+RAW_DATA_PATH = os.getenv("RAW_DATA_PATH")
 
-with duckdb.connect(DB_FILE) as con:
+path = os.path.join(RAW_DATA_PATH, "collecte-francetravail")
+file_path = f"{path}/offres-{DATE_CREATION}.json"
+
+with duckdb.connect(os.path.join(DB_PATH, DUCKDB_FILE)) as con:
 
     con.sql("CREATE SCHEMA IF NOT EXISTS collecte")
 
@@ -28,7 +33,7 @@ with duckdb.connect(DB_FILE) as con:
                 CAST(qualificationCode AS VARCHAR) AS qualificationCode,
                 qualificationLibelle
             FROM 
-                '{JSON_FILE}'
+                '{file_path}'
         )
     """
 

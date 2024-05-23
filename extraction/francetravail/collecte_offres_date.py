@@ -5,12 +5,18 @@ import os
 from datetime import datetime, timedelta
 
 MAX_OFFRES = 3149
-SEARCH_URL = f"{os.getenv('FRANCETRAVAIL_HOST')}/partenaire/offresdemploi/v2/offres/search"
-INDEX = "offres"
-RAW_DATA_PATH = '/raw-data'
 export_json = []
 
-def authenticate(identifiant_client, cle_secrete):
+FRANCETRAVAIL_HOST = os.getenv('FRANCETRAVAIL_HOST')
+DATE_CREATION = os.getenv("DATE_CREATION")
+RAW_DATA_PATH = os.getenv("RAW_DATA_PATH")
+FRANCETRAVAIL_ID_CLIENT = os.getenv("FRANCETRAVAIL_ID_CLIENT")
+FRANCETRAVAIL_CLE_SECRETE = os.getenv("FRANCETRAVAIL_CLE_SECRETE")
+
+SEARCH_URL = f"{FRANCETRAVAIL_HOST}/partenaire/offresdemploi/v2/offres/search"
+REFERENTIEL_URL = f"{FRANCETRAVAIL_HOST}/partenaire/offresdemploi/v2/referentiel"
+
+def authenticate():
 
     url = 'https://entreprise.pole-emploi.fr/connexion/oauth2/access_token?realm=/partenaire'
     headers = {'Content-Type': 'application/x-www-form-urlencoded'}    
@@ -20,8 +26,8 @@ def authenticate(identifiant_client, cle_secrete):
         'scope': 'api_offresdemploiv2 o2dsoffre'
     }
 
-    params['client_id'] = identifiant_client
-    params['client_secret'] = cle_secrete
+    params['client_id'] = FRANCETRAVAIL_ID_CLIENT
+    params['client_secret'] = FRANCETRAVAIL_CLE_SECRETE
 
     response = requests.post(url=url,data=params,headers=headers)
     response = json.loads(response.text)
@@ -206,9 +212,7 @@ def get_offres_metier_region(codeROME, region, minCreationDate, maxCreationDate,
                 else:
                     print(f"response is None ... {start}-{end}/{total}: {codeROME} {region}")
 
-if __name__ == '__main__':
-
-    DATE_CREATION = os.getenv("DATE_CREATION")
+if __name__ == '__main__':    
 
     minCreationDate = datetime \
         .strptime(DATE_CREATION, '%Y-%m-%d') \
@@ -217,10 +221,7 @@ if __name__ == '__main__':
     maxCreationDate = (datetime.strptime(DATE_CREATION, '%Y-%m-%d') + timedelta(days=1)) \
         .strftime('%Y-%m-%dT%H:%M:%SZ')
 
-    FRANCETRAVAIL_ID_CLIENT = os.getenv("FRANCETRAVAIL_ID_CLIENT")
-    FRANCETRAVAIL_CLE_SECRETE = os.getenv("FRANCETRAVAIL_CLE_SECRETE")
-
-    access_token = authenticate(FRANCETRAVAIL_ID_CLIENT, FRANCETRAVAIL_CLE_SECRETE)
+    access_token = authenticate()
 
     url = f"{SEARCH_URL}?range=0-1&minCreationDate={minCreationDate}&maxCreationDate={maxCreationDate}"
     total_offres = get_nb_total_offres(url=url, access_token=access_token)
@@ -230,19 +231,21 @@ if __name__ == '__main__':
 
     print(f"\n\n{date_debut.strftime('%d/%m/%Y %H:%M:%S')}: démarrage collecte de {total_offres} offres d'emploi depuis francetravail.io\n\n")
 
-    url_referentiel = f"{os.getenv('FRANCETRAVAIL_HOST')}/partenaire/offresdemploi/v2/referentiel"
-
-    regions = json.loads(get_referentiel(url=f'{url_referentiel}/regions', access_token=access_token))
-    metiers = json.loads(get_referentiel(url=f'{url_referentiel}/metiers', access_token=access_token))
+    regions = json.loads(get_referentiel(url=f'{REFERENTIEL_URL}/regions', access_token=access_token))
+    metiers = json.loads(get_referentiel(url=f'{REFERENTIEL_URL}/metiers', access_token=access_token))
 
     for metier in metiers:
         get_offres_metier(metier['code'], regions, minCreationDate, maxCreationDate, access_token)
 
     fin_total = time.time()
 
-    FILE_PATH = f"{RAW_DATA_PATH}/offres-francetravail.io-{minCreationDate.split(sep='T')[0]}.json"
+    path = os.path.join(RAW_DATA_PATH, "collecte-francetravail")
+    if not os.path.exists(path):
+        os.mkdir(path)
 
-    with open(FILE_PATH, 'w') as output_file:
+    file_path = f"{path}/offres-{minCreationDate.split(sep='T')[0]}.json"
+
+    with open(file_path, 'w') as output_file:
         json.dump(export_json, output_file, indent=2)
 
     hours = int((fin_total - debut_total) // 3600)
