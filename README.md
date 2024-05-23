@@ -113,5 +113,7 @@ docker volume inspect raw_data
         "Scope": "local"
     }
 ]
-cd <Mountpoint>
+
+sudo -i
+cd /var/lib/docker/volumes/raw_data/_data
 ```
