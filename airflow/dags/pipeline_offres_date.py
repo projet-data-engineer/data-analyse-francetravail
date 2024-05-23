@@ -1,18 +1,34 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
+import pendulum
 
-from airflow.decorators import dag
+from airflow.decorators import dag, task
 from airflow.providers.docker.operators.docker import DockerOperator
 from docker.types import Mount
 
+
+local_tz = pendulum.timezone("Europe/Paris")
+
+"""
+Tous les jours à 01h00, requêtage api des offres créées J-1, puis chargement
+"""
+
 @dag(
     dag_id="pipeline_offres_date",
-    #schedule_interval='*/2 * * * *',
-    schedule=None,
-    start_date=datetime(2023, 12, 1),
+    start_date=datetime(2024, 5, 23, tzinfo=local_tz),
+    schedule_interval='0 1 * * *',
     catchup=False
 )
 def pipeline_offres_date():
+
+    """
+    retourne <date_execution_dag> - 1 jour
+    """
+    @task
+    def date_creation(ds):
+        return (datetime.strptime(ds, '%Y-%m-%d') + timedelta(days=-1)).strftime('%Y-%m-%d')
+
+    _date_creation = date_creation()
 
     collecte_offres_date = DockerOperator(
 
@@ -28,7 +44,7 @@ def pipeline_offres_date():
             'FRANCETRAVAIL_HOST': os.getenv('FRANCETRAVAIL_HOST'),
             'FRANCETRAVAIL_ID_CLIENT': os.getenv('FRANCETRAVAIL_ID_CLIENT'),
             'FRANCETRAVAIL_CLE_SECRETE': os.getenv('FRANCETRAVAIL_CLE_SECRETE'),
-            'DATE_CREATION': '2024-05-22',
+            'DATE_CREATION': _date_creation,
             'RAW_DATA_PATH': os.getenv('RAW_DATA_PATH')
         },
         mounts=[Mount(target=os.getenv('RAW_DATA_PATH'), source=os.getenv('RAW_DATA_VOLUME_NAME'), type='volume')]
@@ -47,7 +63,7 @@ def pipeline_offres_date():
         environment={
             'DUCKDB_FILE': os.getenv('DUCKDB_FILE'),
             'DB_PATH': os.getenv('DB_PATH'),
-            'DATE_CREATION': '2024-05-22',
+            'DATE_CREATION': _date_creation,
             'RAW_DATA_PATH': os.getenv('RAW_DATA_PATH')
         },
         mounts=[
