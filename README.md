@@ -25,8 +25,8 @@ Développement d'une application d'analyse du marché de l'emploi à partir d'un
 
 - Créer les volumes Docker suivants:
 
-  - **raw-data**: volume utilisé pour stockage des fichiers brutes
-  - **db**: volume utilisé pour stockage du fichier de base de données DuckDB
+  - **raw_data**: volume utilisé pour stockage des fichiers brutes
+  - **database**: volume utilisé pour stockage du fichier de base de données DuckDB
 
 ```bash
 #!/bin/bash
