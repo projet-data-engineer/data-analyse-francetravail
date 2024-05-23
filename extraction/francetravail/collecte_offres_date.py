@@ -229,6 +229,10 @@ if __name__ == '__main__':
     debut_total = time.time()
     date_debut = datetime.now()
 
+    log = {
+        "date_debut": date_debut.strftime('%d/%m/%Y %H:%M:%S')
+    }
+
     print(f"\n\n{date_debut.strftime('%d/%m/%Y %H:%M:%S')}: démarrage collecte de {total_offres} offres d'emploi depuis francetravail.io\n\n")
 
     regions = json.loads(get_referentiel(url=f'{REFERENTIEL_URL}/regions', access_token=access_token))
@@ -243,7 +247,7 @@ if __name__ == '__main__':
     if not os.path.exists(path):
         os.mkdir(path)
 
-    file_path = f"{path}/offres-{minCreationDate.split(sep='T')[0]}.json"
+    file_path = f"{path}/offres-{DATE_CREATION}.json"
 
     with open(file_path, 'w') as output_file:
         json.dump(export_json, output_file, indent=2)
@@ -253,13 +257,16 @@ if __name__ == '__main__':
 
     duree_totale = ('0' + str(hours) if hours < 10 else str(hours)) + ':' + ('0' + str(minutes) if minutes < 10 else str(minutes))
 
-    ingestion_data = {
-        "message": "Fin collecte des offres francetravail.io",
-        "date_debut": date_debut.strftime('%d/%m/%Y %H:%M:%S'),
-        "date_fin": datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
-        "total_offres": total_offres,
-        "total_offres_collecte": len(export_json),
-        "duree_totale": duree_totale
-    }
-    
-    print(f"\n{ingestion_data}\n")
+    log['date_creation'] = DATE_CREATION
+    log['dt_deb_collecte'] = date_debut.strftime('%d/%m/%Y %H:%M:%S')
+    log['dt_fin_collecte'] = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+    log['total_offres'] = total_offres
+    log['total_offres_collecte'] = len(export_json)
+    log['duree_totale'] = duree_totale
+
+    log_file_path = f"{path}/offres-{DATE_CREATION}.log"
+
+    with open(log_file_path, 'w') as output_file:
+        json.dump(log, output_file, indent=2)
+
+    print(f"\nFin collecte de {len(export_json)}/{total_offres} offres en date du {DATE_CREATION}\n")
