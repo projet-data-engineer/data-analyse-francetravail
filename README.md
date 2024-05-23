@@ -79,3 +79,39 @@ docker run --rm --name chargement --env-file=.env -v raw_data:/raw_data -v datab
 
 docker-compose up -d
 ```
+
+## Déploiement (manuel) sur VM ec2
+
+```bash
+#!/bin/bash
+# vérification installation de git et Docker
+git --version
+docker --version
+
+git clone https://github.com/projet-data-engineer/data-analyse-francetravail.git
+cd data-analyse-francetravail
+
+# Création fichier .env avec les variables requises (cf. plus haut)
+touch .env
+
+docker volume create raw_data
+docker volume create database
+
+docker image build -t collecte_offres_date:latest extraction/francetravail/
+docker image build -t chargement:latest chargement/
+
+# pour obtenir le point de montage du volume raw_data
+docker volume inspect raw_data
+[
+    {
+        "CreatedAt": "2024-05-23T11:38:53Z",
+        "Driver": "local",
+        "Labels": {},
+        "Mountpoint": "/var/lib/docker/volumes/raw_data/_data",
+        "Name": "raw_data",
+        "Options": {},
+        "Scope": "local"
+    }
+]
+cd <Mountpoint>
+```

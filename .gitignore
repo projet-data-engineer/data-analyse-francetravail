@@ -6,4 +6,8 @@ __pycache__/
 .env
 .venv
 
-airflow/logs
+airflow/logs/*
+!airflow/logs/.gitkeep
+
+airflow/plugins/*
+!airflow/plugins/.gitkeep
