@@ -59,8 +59,21 @@ DB_PATH_VOLUME_NAME=database
 ```bash
 #!/bin/bash
 
-docker image build -t collecte_offres_date:latest extraction/francetravail/
-docker run --rm --name collecte_offres_date --env-file=.env -v raw_data:/raw_data -e DATE_CREATION='2024-05-22' collecte_offres_date:latest python ./collecte_offres_date.py
+docker image build -t collecte:latest collecte/
+docker run --rm --name collecte_offres_date --env-file=.env -v raw_data:/raw_data -e DATE_CREATION='2024-05-22' collecte:latest python ./collecte_offres_date.py
+```
+
+### Execution unitaire du conteneur de collecte nomencture ROME
+
+```bash
+#!/bin/bash
+
+docker image build -t collecte:latest collecte/
+docker image build -t chargement:latest chargement/
+
+docker run --rm --name collecte_rome --env-file=.env -v raw_data:/raw_data collecte:latest python ./collecte_rome.py
+docker run --rm --name chargement_rome --env-file=.env -v raw_data:/raw_data -v database:/database chargement:latest python ./chargement_rome.py
+
 ```
 
 ### Execution unitaire du conteneur de chargement des offres
@@ -97,7 +110,7 @@ touch .env
 docker volume create raw_data
 docker volume create database
 
-docker image build -t collecte_offres_date:latest extraction/francetravail/
+docker image build -t collecte:latest collecte/
 docker image build -t chargement:latest chargement/
 
 # pour obtenir le point de montage du volume raw_data

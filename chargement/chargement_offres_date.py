@@ -38,6 +38,6 @@ with duckdb.connect(os.path.join(DB_PATH, DUCKDB_FILE)) as con:
     """
 
     con.sql(SQL)
-    con.execute("SELECT COUNT(*) FROM collecte.raw_offre")
-    
-    print(f"\n\n{con.fetchone()[0]} offres chargées !\n\n")
+
+    con.execute("SELECT COUNT(*) FROM collecte.raw_offre")    
+    print(f"\n\n{con.fetchone()[0]} enregistrements chargés !\n\n")
