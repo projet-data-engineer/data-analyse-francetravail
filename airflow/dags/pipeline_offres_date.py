@@ -30,6 +30,8 @@ def pipeline_offres_date():
 
     _date_creation = date_creation()
 
+    # --mount type=bind,source="$(pwd)"/raw_data,target=/raw_data
+
     collecte_offres_date = DockerOperator(
 
         task_id='collecte_offres_date',

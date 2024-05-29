@@ -72,7 +72,22 @@ docker image build -t collecte:latest collecte/
 docker image build -t chargement:latest chargement/
 
 docker run --rm --name collecte_rome --env-file=.env -v raw_data:/raw_data collecte:latest python ./collecte_rome.py
-docker run --rm --name chargement_rome --env-file=.env -v raw_data:/raw_data -v database:/database chargement:latest python ./chargement_rome.py
+
+docker run --rm \
+--name collecte_offres_date \
+--env-file=.env \
+--mount type=bind,source="$(pwd)"/raw_data,target=/raw_data \
+-e DATE_CREATION='2024-05-28' \
+collecte_offres_date:latest \
+python ./collecte_offres_date.py 
+
+docker run --rm 
+--name chargement_rome 
+--env-file=.env 
+--mount type=bind,source="$(pwd)"/raw_data,target=/raw_data \
+--mount type=bind,source="$(pwd)"/database,target=/database \
+chargement:latest
+python ./chargement_rome.py
 
 ```
 
@@ -82,7 +97,15 @@ docker run --rm --name chargement_rome --env-file=.env -v raw_data:/raw_data -v 
 #!/bin/bash
 
 docker image build -t chargement:latest chargement/
-docker run --rm --name chargement --env-file=.env -v raw_data:/raw_data -v database:/database -e DATE_CREATION='2024-05-22' chargement:latest python ./chargement_offres_date.py
+
+docker run --rm \
+--name chargement \
+--env-file=.env \
+--mount type=bind,source="$(pwd)"/raw_data,target=/raw_data \
+--mount type=bind,source="$(pwd)"/database,target=/database \
+-e DATE_CREATION='2024-05-28' chargement:latest \
+ python ./chargement_offres_date.py
+ 
 ```
 
 ### Execution des pipelines dans Airflow
