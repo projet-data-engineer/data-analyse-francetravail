@@ -22,15 +22,14 @@ x-airflow-common:
     FRANCETRAVAIL_ID_CLIENT: ${FRANCETRAVAIL_ID_CLIENT}
     FRANCETRAVAIL_CLE_SECRETE: ${FRANCETRAVAIL_CLE_SECRETE}
     RAW_DATA_PATH: ${RAW_DATA_PATH}
-    RAW_DATA_VOLUME_NAME: ${RAW_DATA_VOLUME_NAME}
     DB_PATH: ${DB_PATH}
-    DB_PATH_VOLUME_NAME: ${DB_PATH_VOLUME_NAME}
     DUCKDB_FILE: ${DUCKDB_FILE}
 
   volumes:
     - ./airflow/dags:/opt/airflow/dags
     - ./airflow/plugins:/opt/airflow/plugins
     - ./airflow/logs:/opt/airflow/logs
+    
   networks:
       - data-emploi
 

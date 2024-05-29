@@ -11,9 +11,3 @@ airflow/logs/*
 
 airflow/plugins/*
 !airflow/plugins/.gitkeep
-
-database/*
-!database/.gitkeep
-
-raw_data/*
-!raw_data/.gitkeep
