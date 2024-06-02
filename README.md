@@ -76,7 +76,7 @@ docker run --rm --name collecte_rome --env-file=.env -v raw_data:/raw_data colle
 docker run --rm \
 --name collecte_offres_date \
 --env-file=.env \
---mount type=bind,source="$(pwd)"/raw_data,target=/raw_data \
+--mount type=volume, source=raw_data, target=/raw_data \
 -e DATE_CREATION='2024-05-28' \
 collecte_offres_date:latest \
 python ./collecte_offres_date.py 
@@ -84,8 +84,8 @@ python ./collecte_offres_date.py
 docker run --rm 
 --name chargement_rome 
 --env-file=.env 
---mount type=bind,source="$(pwd)"/raw_data,target=/raw_data \
---mount type=bind,source="$(pwd)"/database,target=/database \
+--mount type=volume, source=raw_data, target=/raw_data \
+--mount type=volume, source=database, target=/database \
 chargement:latest
 python ./chargement_rome.py
 
@@ -101,8 +101,8 @@ docker image build -t chargement:latest chargement/
 docker run --rm \
 --name chargement \
 --env-file=.env \
---mount type=bind,source="$(pwd)"/raw_data,target=/raw_data \
---mount type=bind,source="$(pwd)"/database,target=/database \
+--mount type=volume, source=raw_data, target=/raw_data \
+--mount type=volume, source=database, target=/database \
 -e DATE_CREATION='2024-05-28' chargement:latest \
  python ./chargement_offres_date.py
  
@@ -153,3 +153,24 @@ docker volume inspect raw_data
 sudo -i
 cd /var/lib/docker/volumes/raw_data/_data
 ```
+
+### Airflow cli
+
+```bash
+#!/bin/bash
+
+docker exec -it airflow-scheduler bash
+
+airflow dags list
+dag_id               | filepath                | owner   | paused
+=====================+=========================+=========+=======
+pipeline_offres_date | pipeline_offres_date.py | airflow | True
+pipeline_rome        | pipeline_rome.py        | airflow | True
+
+airflow dags unpause pipeline_offres_date
+airflow dags unpause pipeline_rome
+
+airflow dags trigger pipeline_offres_date
+airflow dags trigger pipeline_rome
+```
+

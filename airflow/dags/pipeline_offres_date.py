@@ -51,7 +51,7 @@ collecte_offres_date = DockerOperator(
         'DATE_CREATION': _date_creation,
         'RAW_DATA_PATH': os.getenv('RAW_DATA_PATH')
     },
-    mounts=[Mount(source="raw_data", target="/raw_data", type='volume')],
+    mounts=[Mount(source="raw_data", target="/raw_data", type="volume")],
     dag=dag
 )
 
@@ -72,8 +72,8 @@ chargement_offres_date = DockerOperator(
         'RAW_DATA_PATH': os.getenv('RAW_DATA_PATH')
     },
    mounts=[
-        Mount(source="raw_data", target="/raw_data", type='volume'),
-        Mount(source="database", target="/database", type='volume')
+        Mount(source="raw_data", target="/raw_data", type="volume"),
+        Mount(source="database", target="/database", type="volume")
     ],
     dag=dag
 )
