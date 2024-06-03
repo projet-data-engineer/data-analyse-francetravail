@@ -44,6 +44,7 @@ collecte_offres_date = DockerOperator(
     docker_url="TCP://docker-proxy:2375",
     mount_tmp_dir=False,
     command="python ./collecte_offres_date.py",
+    network_mode="data-emploi",
     environment={
         'FRANCETRAVAIL_HOST': os.getenv('FRANCETRAVAIL_HOST'),
         'FRANCETRAVAIL_ID_CLIENT': os.getenv('FRANCETRAVAIL_ID_CLIENT'),
@@ -65,6 +66,7 @@ chargement_offres_date = DockerOperator(
     docker_url="TCP://docker-proxy:2375",
     mount_tmp_dir=False,
     command="python ./chargement_offres_date.py",
+    network_mode="data-emploi",
     environment={
         'DUCKDB_FILE': os.getenv('DUCKDB_FILE'),
         'DB_PATH': os.getenv('DB_PATH'),
