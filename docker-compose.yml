@@ -92,7 +92,6 @@ services:
     privileged: true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./raw_data:/raw_data
     restart: always
     networks:
       - data-emploi
