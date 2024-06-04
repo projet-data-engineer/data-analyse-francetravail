@@ -81,4 +81,3 @@ chargement_offres_date = DockerOperator(
 )
 
 collecte_offres_date >> chargement_offres_date
-
