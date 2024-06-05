@@ -4,14 +4,11 @@ x-airflow-common:
   &airflow-common
   build: ./airflow
   user: "${AIRFLOW_UID:-50000}:0"
-  #user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
   environment:
     &airflow-common-env
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-repo:5432/airflow
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-    #AIRFLOW__CORE__PLUGINS_FOLDER: /opt/airflow/plugins
-    #AIRFLOW__CORE__LAZY_LOAD_PLUGINS: 'false'
     _AIRFLOW_DB_MIGRATE: 'true'
     AIRFLOW__CORE__TEST_CONNECTION: Enabled
     TZ: Europe/Paris
@@ -35,10 +32,7 @@ x-airflow-common:
   volumes:
 
     - ./airflow/dags:/opt/airflow/dags
-    #- ./airflow/plugins:/opt/airflow/plugins
-    - ./airflow/logs:/opt/airflow/logs
-
-    #- ./collecte:/opt/airflow/dags/collecte
+     - ./airflow/logs:/opt/airflow/logs
 
     - ./collecte:/opt/airflow/modules/collecte
     - ./chargement:/opt/airflow/modules/chargement
