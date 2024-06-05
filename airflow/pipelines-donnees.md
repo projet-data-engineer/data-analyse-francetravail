@@ -30,3 +30,9 @@ Exemple d'item de nomenclature ROME:
 ```
 
 ![Graphe pipeline_nomenclature_rome](/doc/img/pipeline_nomenclature_rome.png)
+
+## pipeline_nomenclature_naf
+
+- Fichier de DAG: ./airflow/dags/pipeline_nomenclature_naf.py
+- Programmation: éxecution manuelle
+- Description: chargement dans entrepôt DuckDB nomenclature NAF (5 niveaux dénormalisés)

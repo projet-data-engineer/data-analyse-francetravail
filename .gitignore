@@ -14,6 +14,9 @@ airflow/plugins/*
 
 donnees_brutes/*
 !donnees_brutes/.gitkeep
+!donnees_brutes/nomenclatures
+donnees_brutes/nomenclatures/*
+!donnees_brutes/nomenclatures/naf2008_5_niveaux.xlsx
 
 stockage/*
 !stockage/.gitkeep

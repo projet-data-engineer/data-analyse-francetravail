@@ -23,6 +23,8 @@ Développement d'une application d'analyse du marché de l'emploi à partir d'un
 
     - **pipeline_offres_date.py**: collecte et chargement des offres francetravail créés J-1
 
+    - **pipeline_nomenclature_naf.py**: chargement dans entrepôt DuckDB nomenclature NAF (5 niveaux dénormalisés)
+
   - **logs**: répertoire des logs Airflow, monté sur /opt/airflow/logs du conteneur
 
 - **chargement**: scripts appelés par les pipelines qui chargent les données brutes collectées dans l'entrepôt DuckDB

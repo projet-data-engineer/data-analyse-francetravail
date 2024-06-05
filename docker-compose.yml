@@ -30,13 +30,10 @@ x-airflow-common:
     NOM_FICHIER_STOCKAGE: ${NOM_FICHIER_STOCKAGE}
 
   volumes:
-
     - ./airflow/dags:/opt/airflow/dags
-     - ./airflow/logs:/opt/airflow/logs
-
+    - ./airflow/logs:/opt/airflow/logs
     - ./collecte:/opt/airflow/modules/collecte
     - ./chargement:/opt/airflow/modules/chargement
-
     - ${CHEMIN_LOCAL_DONNEES_BRUTES}:${CHEMIN_DONNEES_BRUTES}
     - ${CHEMIN_LOCAL_STOCKAGE}:${CHEMIN_STOCKAGE}
     
