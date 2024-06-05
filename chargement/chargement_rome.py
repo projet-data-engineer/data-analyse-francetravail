@@ -1,32 +1,31 @@
 import os
 import duckdb
 
-DB_PATH = os.getenv('DB_PATH')
-DUCKDB_FILE = os.getenv('DUCKDB_FILE')
-RAW_DATA_PATH = os.getenv("RAW_DATA_PATH")
 
-path = os.path.join(RAW_DATA_PATH, "nomenclatures")
-file_path = f"{path}/rome.json"
+def chargement(chemin_donnees_brutes, nom_fichier_donnees_brutes, chemin_stockage, nom_fichier_stockage):
 
-with duckdb.connect(os.path.join(DB_PATH, DUCKDB_FILE)) as con:
+    path = os.path.join(chemin_donnees_brutes, "nomenclatures")
+    chemin_fichier_brut = os.path.join(path,nom_fichier_donnees_brutes)
 
-    con.sql("CREATE SCHEMA IF NOT EXISTS collecte")
+    with duckdb.connect(os.path.join(chemin_stockage, nom_fichier_stockage)) as con:
 
-    SQL = f"""
-        CREATE OR REPLACE TABLE collecte.rome AS (
-            SELECT
-                code_1,
-                libelle_1,
-                code_2,
-                libelle_2,
-                code_3,
-                libelle_3
-            FROM 
-                '{file_path}'
-        )
-    """
+        con.sql("CREATE SCHEMA IF NOT EXISTS collecte")
 
-    con.sql(SQL)
+        SQL = f"""
+            CREATE OR REPLACE TABLE collecte.rome AS (
+                SELECT
+                    code_1,
+                    libelle_1,
+                    code_2,
+                    libelle_2,
+                    code_3,
+                    libelle_3
+                FROM 
+                    '{chemin_fichier_brut}'
+            )
+        """
 
-    con.execute("SELECT COUNT(*) FROM collecte.rome")
-    print(f"\n\n{con.fetchone()[0]} enregistrements chargés !\n\n")
+        con.sql(SQL)
+
+        con.execute("SELECT COUNT(*) FROM collecte.rome")
+        print(f"\n\n{con.fetchone()[0]} enregistrements chargés !\n\n")

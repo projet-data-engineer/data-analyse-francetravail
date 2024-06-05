@@ -3,32 +3,48 @@ version: '3.9'
 x-airflow-common:
   &airflow-common
   build: ./airflow
-  #user: "${AIRFLOW_UID:-50000}:0"
-  user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
+  user: "${AIRFLOW_UID:-50000}:0"
+  #user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
   environment:
     &airflow-common-env
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-repo:5432/airflow
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-    AIRFLOW__CORE__PLUGINS_FOLDER: /opt/airflow/plugins
-    AIRFLOW__CORE__LAZY_LOAD_PLUGINS: 'false'
+    #AIRFLOW__CORE__PLUGINS_FOLDER: /opt/airflow/plugins
+    #AIRFLOW__CORE__LAZY_LOAD_PLUGINS: 'false'
     _AIRFLOW_DB_MIGRATE: 'true'
     AIRFLOW__CORE__TEST_CONNECTION: Enabled
     TZ: Europe/Paris
     AIRFLOW__WEBSERVER__DEFAULT_UI_TIMEZONE: Europe/Paris
     AIRFLOW__CORE__DEFAULT_TIMEZONE: Europe/Paris
 
+    PYTHONPATH: /opt/airflow/modules:$PYTHONPATH
+
     FRANCETRAVAIL_HOST: ${FRANCETRAVAIL_HOST}
     FRANCETRAVAIL_ID_CLIENT: ${FRANCETRAVAIL_ID_CLIENT}
     FRANCETRAVAIL_CLE_SECRETE: ${FRANCETRAVAIL_CLE_SECRETE}
-    RAW_DATA_PATH: ${RAW_DATA_PATH}
-    DB_PATH: ${DB_PATH}
-    DUCKDB_FILE: ${DUCKDB_FILE}
+
+    CHEMIN_LOCAL_DONNEES_BRUTES: ${CHEMIN_LOCAL_DONNEES_BRUTES}
+    CHEMIN_DONNEES_BRUTES: ${CHEMIN_DONNEES_BRUTES}
+
+    CHEMIN_LOCAL_STOCKAGE: ${CHEMIN_LOCAL_STOCKAGE}
+    CHEMIN_STOCKAGE: ${CHEMIN_STOCKAGE}
+
+    NOM_FICHIER_STOCKAGE: ${NOM_FICHIER_STOCKAGE}
 
   volumes:
+
     - ./airflow/dags:/opt/airflow/dags
-    - ./airflow/plugins:/opt/airflow/plugins
+    #- ./airflow/plugins:/opt/airflow/plugins
     - ./airflow/logs:/opt/airflow/logs
+
+    #- ./collecte:/opt/airflow/dags/collecte
+
+    - ./collecte:/opt/airflow/modules/collecte
+    - ./chargement:/opt/airflow/modules/chargement
+
+    - ${CHEMIN_LOCAL_DONNEES_BRUTES}:${CHEMIN_DONNEES_BRUTES}
+    - ${CHEMIN_LOCAL_STOCKAGE}:${CHEMIN_STOCKAGE}
     
   networks:
       - data-emploi
@@ -80,21 +96,6 @@ services:
     restart: always
     depends_on:
       - airflow-repo
-
-  docker-proxy:
-    image: tecnativa/docker-socket-proxy:0.1.1
-    container_name: docker-proxy
-    environment:
-      CONTAINERS: 1
-      IMAGES: 1
-      AUTH: 1
-      POST: 1
-    privileged: true
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    restart: always
-    networks:
-      - data-emploi
 
 networks:
   data-emploi:

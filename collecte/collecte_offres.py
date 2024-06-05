@@ -1,3 +1,4 @@
+import glob
 import requests
 import json
 import time
@@ -9,13 +10,13 @@ MAX_OFFRES = 3149
 export_json = []
 
 FRANCETRAVAIL_HOST = os.getenv('FRANCETRAVAIL_HOST')
-DATE_CREATION = os.getenv("DATE_CREATION")
-RAW_DATA_PATH = os.getenv("RAW_DATA_PATH")
 FRANCETRAVAIL_ID_CLIENT = os.getenv("FRANCETRAVAIL_ID_CLIENT")
 FRANCETRAVAIL_CLE_SECRETE = os.getenv("FRANCETRAVAIL_CLE_SECRETE")
 
 SEARCH_URL = f"{FRANCETRAVAIL_HOST}/partenaire/offresdemploi/v2/offres/search"
 REFERENTIEL_URL = f"{FRANCETRAVAIL_HOST}/partenaire/offresdemploi/v2/referentiel"
+
+#PATH_DONNEES_BRUTES = '/donnees_brutes'
 
 parisTz = pytz.timezone("Europe/Paris") 
 
@@ -215,13 +216,13 @@ def get_offres_metier_region(codeROME, region, minCreationDate, maxCreationDate,
                 else:
                     print(f"response is None ... {start}-{end}/{total}: {codeROME} {region}")
 
-if __name__ == '__main__':    
+def collecte_offres_date(chemin_donnees_brutes, date_creation):    
 
     minCreationDate = datetime \
-        .strptime(DATE_CREATION, '%Y-%m-%d') \
+        .strptime(date_creation, '%Y-%m-%d') \
         .strftime('%Y-%m-%dT%H:%M:%SZ')
 
-    maxCreationDate = (datetime.strptime(DATE_CREATION, '%Y-%m-%d') + timedelta(days=1)) \
+    maxCreationDate = (datetime.strptime(date_creation, '%Y-%m-%d') + timedelta(days=1)) \
         .strftime('%Y-%m-%dT%H:%M:%SZ')
 
     access_token = authenticate()
@@ -246,11 +247,11 @@ if __name__ == '__main__':
 
     fin_total = time.time()
 
-    path = os.path.join(RAW_DATA_PATH, "collecte-francetravail")
+    path = os.path.join(chemin_donnees_brutes, "collecte_offres_francetravail")
     if not os.path.exists(path):
         os.mkdir(path)
 
-    file_path = f"{path}/offres-{DATE_CREATION}.json"
+    file_path = f"{path}/offres-{date_creation}.json"
 
     with open(file_path, 'w') as output_file:
         json.dump(export_json, output_file, indent=2)
@@ -260,15 +261,15 @@ if __name__ == '__main__':
 
     duree_totale = ('0' + str(hours) if hours < 10 else str(hours)) + ':' + ('0' + str(minutes) if minutes < 10 else str(minutes))
 
-    log['date_creation'] = DATE_CREATION
+    log['date_creation'] = date_creation
     log['dt_fin_collecte'] = datetime.now(parisTz).strftime('%d/%m/%Y %H:%M:%S')
     log['total_offres'] = total_offres
     log['total_offres_collecte'] = len(export_json)
     log['duree_totale'] = duree_totale
 
-    log_file_path = f"{path}/offres-{DATE_CREATION}.log"
+    log_file_path = f"{path}/offres-{date_creation}.log"
 
     with open(log_file_path, 'w') as output_file:
         json.dump(log, output_file, indent=2)
 
-    print(f"\nFin collecte de {len(export_json)}/{total_offres} offres en date du {DATE_CREATION}\n")
+    print(f"\nFin collecte de {len(export_json)}/{total_offres} offres en date du {date_creation}\n")

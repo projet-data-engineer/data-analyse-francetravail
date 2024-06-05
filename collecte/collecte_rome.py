@@ -11,6 +11,7 @@ import requests
 #
 """
 
+
 def authenticate(identifiant_client, cle_secrete):
 
     url = 'https://entreprise.pole-emploi.fr/connexion/oauth2/access_token?realm=/partenaire'
@@ -44,10 +45,8 @@ def get_data(url, access_token):
 
 
 
-if __name__ == '__main__':
-
-    RAW_DATA_PATH = os.getenv("RAW_DATA_PATH")
-    
+def collecte(chemin_donnees_brutes, nom_fichier_donnees_brutes):
+  
     romes = []
 
     FRANCETRAVAIL_ID_CLIENT = os.getenv("FRANCETRAVAIL_ID_CLIENT")
@@ -76,11 +75,11 @@ if __name__ == '__main__':
 
         romes.append(rome)
 
-    path = os.path.join(RAW_DATA_PATH, "nomenclatures")
+    path = os.path.join(chemin_donnees_brutes, "nomenclatures")
     if not os.path.exists(path):
         os.mkdir(path)
         
-    file_path = f"{path}/rome.json"
+    file_path = os.path.join(path, nom_fichier_donnees_brutes)
 
     with open(file_path, 'w') as output_file:
         json.dump(romes, output_file, indent=2, ensure_ascii=False)

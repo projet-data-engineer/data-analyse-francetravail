@@ -11,3 +11,9 @@ airflow/logs/*
 
 airflow/plugins/*
 !airflow/plugins/.gitkeep
+
+donnees_brutes/*
+!donnees_brutes/.gitkeep
+
+stockage/*
+!stockage/.gitkeep
