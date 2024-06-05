@@ -14,7 +14,7 @@
 - Programmation: éxecution manuelle
 - Description: collecte des 3 niveaux dénormalisés de la nomenclature ROME
 
-Schéma d'un item de nomenclature ROME:
+Exemple d'item de nomenclature ROME:
 
 ```json
 [
