@@ -22,6 +22,7 @@ Développement d'une application d'analyse du marché de l'emploi à partir d'un
     - **pipeline_nomenclature_rome.py**: collecte et chargement de la nomenclature ROME (3 niveaux dénormalisés)
 
     - **pipeline_offres_date.py**: collecte et chargement des offres francetravail créés J-1
+
   - **logs**: répertoire des logs Airflow, monté sur /opt/airflow/logs du conteneur
 
 - **chargement**: scripts appelés par les pipelines qui chargent les données brutes collectées dans l'entrepôt DuckDB
