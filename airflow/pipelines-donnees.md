@@ -14,16 +14,10 @@
 - Programmation: éxecution manuelle
 - Description: collecte des 3 niveaux dénormalisés de la nomenclature ROME
 
+Schéma d'un item de nomenclature ROME:
+
 ```json
 [
-    {
-        "code_1": "M",
-        "libelle_1": "Support à l'entreprise",
-        "code_2": "M14",
-        "libelle_2": "Organisation et études",
-        "code_3": "M1405",
-        "libelle_3": "Data Scientist"
-    },
     {
         "code_1": "M",
         "libelle_1": "Support à l'entreprise",
