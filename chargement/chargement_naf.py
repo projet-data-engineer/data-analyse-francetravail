@@ -7,9 +7,6 @@ def chargement(chemin_donnees_brutes, chemin_fichier_donnees_brutes, chemin_stoc
 
     with duckdb.connect(os.path.join(chemin_stockage, nom_fichier_stockage)) as con:
 
-        con.sql("INSTALL spatial")
-        con.sql("LOAD spatial")
-
         SQL = f"""
             CREATE OR REPLACE TABLE collecte.naf AS
                 WITH
@@ -21,42 +18,42 @@ def chargement(chemin_donnees_brutes, chemin_fichier_donnees_brutes, chemin_stoc
                             niv2,
                             niv1
                         FROM
-                            st_read('{chemin_fichier_brut}',open_options = ['HEADERS=FORCE', 'FIELD_TYPES=STRING'], layer='hierarchie')
+                            '{chemin_fichier_brut}/hierarchie.csv'
                     ),
                     niveau_1 AS (
                         SELECT
                             code,
                             libelle
                         FROM
-                            st_read('{chemin_fichier_brut}',open_options = ['HEADERS=FORCE', 'FIELD_TYPES=STRING'], layer='niveau_1')
+                            '{chemin_fichier_brut}/niveau_1.csv'
                     ),
                     niveau_2 AS (
                         SELECT
                             code,
                             libelle
                         FROM
-                            st_read('{chemin_fichier_brut}',open_options = ['HEADERS=FORCE', 'FIELD_TYPES=STRING'], layer='niveau_2')
+                            '{chemin_fichier_brut}/niveau_2.csv'
                     ),
                     niveau_3 AS (
                         SELECT
                             code,
                             libelle
                         FROM
-                            st_read('{chemin_fichier_brut}',open_options = ['HEADERS=FORCE', 'FIELD_TYPES=STRING'], layer='niveau_3')
+                            '{chemin_fichier_brut}/niveau_3.csv'
                     ),
                     niveau_4 AS (
                         SELECT
                             code,
                             libelle
                         FROM
-                            st_read('{chemin_fichier_brut}',open_options = ['HEADERS=FORCE', 'FIELD_TYPES=STRING'], layer='niveau_4')
+                            '{chemin_fichier_brut}/niveau_4.csv'
                     ),
                     niveau_5 AS (
                         SELECT
                             code,
                             libelle
                         FROM
-                            st_read('{chemin_fichier_brut}',open_options = ['HEADERS=FORCE', 'FIELD_TYPES=STRING'], layer='niveau_5')
+                            '{chemin_fichier_brut}/niveau_5.csv'
                     )
 
                     SELECT

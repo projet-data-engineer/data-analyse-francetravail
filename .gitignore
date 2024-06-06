@@ -12,11 +12,13 @@ airflow/logs/*
 airflow/plugins/*
 !airflow/plugins/.gitkeep
 
-donnees_brutes/*
-!donnees_brutes/.gitkeep
-!donnees_brutes/nomenclatures
-donnees_brutes/nomenclatures/*
-!donnees_brutes/nomenclatures/naf2008_5_niveaux.xlsx
+donnees_brutes/collecte_offres_francetravail/*
+!donnees_brutes/collecte_offres_francetravail/.gitkeep
+
+donnees_brutes/collecte_nomenclature_rome_francetravail/*
+!donnees_brutes/collecte_nomenclature_rome_francetravail/.gitkeep
+
+duckdb_cli
 
 stockage/*
 !stockage/.gitkeep

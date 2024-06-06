@@ -35,7 +35,9 @@ Développement d'une application d'analyse du marché de l'emploi à partir d'un
 
   - **collecte_offres_francetravail**: emplacement de stockage des fichiers de données brutes des offres d'emploi
 
-  - **nomenclatures**: emplacement de stockage des fichiers de données brutes des nomenclatures
+  - **collecte_nomenclature_rome_francetravail**: emplacement de stockage du fichier brute de la nomenclature ROME collectée depuis francetravail.io
+
+  - **nomenclature_naf_csv**: emplacement de stockage des fichiers brutes des 5 niveaux de la nomenclature NAF
 
 - **stockage**: emplacement local du fichier de persistance de l'entrepôt DuckDB
 
@@ -78,3 +80,61 @@ docker-compose up -d
 ## Construction de l'entrepôt de données
 
 [Documentation des pipelines de données](./airflow/pipelines-donnees.md)
+
+## Requêtage de l'entrepôt DuckDB
+
+Fichier de persistence DuckDB: **./stockage/entrepot-emploi.duckdb**
+
+Les accès à l'entrepôt sont réalisés de deux manières:
+
+- Via l'API Python: [Documentation API Python DuckDB](https://duckdb.org/docs/api/python/overview)
+- Via une interface CLI: [Documentation CLI DuckDB](https://duckdb.org/docs/api/cli/overview)
+- [Installation DuckDB](https://duckdb.org/docs/installation/?version=stable&environment=cli&platform=win&download_method=package_manager)
+
+### Guide de démarrage rapide avec la CLI
+
+- Liens de téléchargement:
+
+  - [DuckDB CLI Windows](https://github.com/duckdb/duckdb/releases/download/v1.0.0/duckdb_cli-windows-amd64.zip)
+  - [DuckDB CLI macOS](https://github.com/duckdb/duckdb/releases/download/v1.0.0/duckdb_cli-osx-universal.zip)
+  - [DuckDB CLI Linux](https://github.com/duckdb/duckdb/releases/download/v1.0.0/duckdb_cli-linux-amd64.zip)
+
+- Execution sur une machine Windows:
+
+  - Décompacter le zip à la racine du projet et se positionner sur cet emplacement dans une fenêtre de terminal
+  - Lancer la CLI en indiquant le chemin vers le fichier de persistence DuckDB
+
+```powershell
+.\duckdb.exe ..\stockage\entrepot-emploi.duckdb
+v1.0.0 1f98600c2c
+Enter ".help" for usage hints.
+D
+```
+
+- Quelques exemples de requêtes
+
+```powershell
+D SHOW ALL TABLES; 
+
+D SELECT COUNT(*) FROM collecte.raw_offre;
+┌──────────────┐
+│ count_star() │
+│    int64     │
+├──────────────┤
+│        38199 │
+└──────────────┘
+
+D SELECT code_5,libelle_5,code_1,libelle_1 FROM collecte.naf LIMIT 5;
+┌─────────┬────────────────────────────────────────────────────────────────────────────────────────┬─────────┬────────────────────────────────────┐
+│ code_5  │                                       libelle_5                                        │ code_1  │             libelle_1              │
+│ varchar │                                        varchar                                         │ varchar │              varchar               │
+├─────────┼────────────────────────────────────────────────────────────────────────────────────────┼─────────┼────────────────────────────────────┤
+│ 01.11Z  │ Culture de céréales (à l'exception du riz), de légumineuses et de graines oléagineuses │ A       │ Agriculture, sylviculture et pêche │
+│ 01.14Z  │ Culture de la canne à sucre                                                            │ A       │ Agriculture, sylviculture et pêche │
+│ 01.16Z  │ Culture de plantes à fibres                                                            │ A       │ Agriculture, sylviculture et pêche │
+│ 01.19Z  │ Autres cultures non permanentes                                                        │ A       │ Agriculture, sylviculture et pêche │
+│ 01.22Z  │ Culture de fruits tropicaux et subtropicaux                                            │ A       │ Agriculture, sylviculture et pêche │
+└─────────┴────────────────────────────────────────────────────────────────────────────────────────┴─────────┴────────────────────────────────────┘
+
+D .quit
+```

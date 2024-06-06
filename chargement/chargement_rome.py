@@ -2,10 +2,9 @@ import os
 import duckdb
 
 
-def chargement(chemin_donnees_brutes, nom_fichier_donnees_brutes, chemin_stockage, nom_fichier_stockage):
+def chargement(chemin_donnees_brutes, chemin_fichier_donnees_brutes, chemin_stockage, nom_fichier_stockage):
 
-    path = os.path.join(chemin_donnees_brutes, "nomenclatures")
-    chemin_fichier_brut = os.path.join(path,nom_fichier_donnees_brutes)
+    chemin_fichier_brut = os.path.join(chemin_donnees_brutes,chemin_fichier_donnees_brutes)
 
     with duckdb.connect(os.path.join(chemin_stockage, nom_fichier_stockage)) as con:
 
@@ -21,7 +20,7 @@ def chargement(chemin_donnees_brutes, nom_fichier_donnees_brutes, chemin_stockag
                     code_3,
                     libelle_3
                 FROM 
-                    '{chemin_fichier_brut}'
+                    '{chemin_fichier_brut}/nomenclature_rome.json'
             )
         """
 

@@ -45,7 +45,7 @@ def get_data(url, access_token):
 
 
 
-def collecte(chemin_donnees_brutes, nom_fichier_donnees_brutes):
+def collecte(chemin_donnees_brutes, chemin_fichier_donnees_brutes):
   
     romes = []
 
@@ -75,11 +75,11 @@ def collecte(chemin_donnees_brutes, nom_fichier_donnees_brutes):
 
         romes.append(rome)
 
-    path = os.path.join(chemin_donnees_brutes, "nomenclatures")
+    path = os.path.join(chemin_donnees_brutes, chemin_fichier_donnees_brutes)
     if not os.path.exists(path):
         os.mkdir(path)
         
-    file_path = os.path.join(path, nom_fichier_donnees_brutes)
+    file_path = os.path.join(path, 'nomenclature_rome.json')
 
     with open(file_path, 'w') as output_file:
         json.dump(romes, output_file, indent=2, ensure_ascii=False)

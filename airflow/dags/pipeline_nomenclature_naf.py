@@ -5,10 +5,7 @@ import pendulum
 from airflow.decorators import dag, task
 from chargement import chargement_naf
 
-
 local_tz = pendulum.timezone("Europe/Paris")
-
-NOM_FICHIER_DONNEES_BRUTES='nomenclatures/nomenclature_rome.json'
 
 @dag(
     dag_id='pipeline_nomenclature_naf',
@@ -24,7 +21,7 @@ def pipeline_nomenclature_naf():
 
         chargement_naf.chargement(
             chemin_donnees_brutes=os.getenv('CHEMIN_DONNEES_BRUTES'), 
-            chemin_fichier_donnees_brutes=NOM_FICHIER_DONNEES_BRUTES, 
+            chemin_fichier_donnees_brutes='nomenclature_naf_csv', 
             chemin_stockage=os.getenv('CHEMIN_STOCKAGE'),
             nom_fichier_stockage=os.getenv('NOM_FICHIER_STOCKAGE')
         )

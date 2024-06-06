@@ -13,8 +13,6 @@ local_tz = pendulum.timezone("Europe/Paris")
 Collecte et chargement nomenclature 3 niveaux
 """
 
-NOM_FICHIER_DONNEES_BRUTES='nomenclature_rome.json'
-
 @dag(
     dag_id='pipeline_nomenclature_rome',
     description='Collecte 3 niveaux nomenclature ROME depuis api francetravail.io',
@@ -29,7 +27,7 @@ def pipeline_nomenclature_rome():
 
         collecte_rome.collecte(
             chemin_donnees_brutes=os.getenv('CHEMIN_DONNEES_BRUTES'), 
-            nom_fichier_donnees_brutes=NOM_FICHIER_DONNEES_BRUTES
+            chemin_fichier_donnees_brutes='collecte_nomenclature_rome_francetravail'
         )
 
     @task
@@ -37,7 +35,7 @@ def pipeline_nomenclature_rome():
 
         chargement_rome.chargement(
             chemin_donnees_brutes=os.getenv('CHEMIN_DONNEES_BRUTES'), 
-            nom_fichier_donnees_brutes=NOM_FICHIER_DONNEES_BRUTES, 
+            chemin_fichier_donnees_brutes='collecte_nomenclature_rome_francetravail', 
             chemin_stockage=os.getenv('CHEMIN_STOCKAGE'),
             nom_fichier_stockage=os.getenv('NOM_FICHIER_STOCKAGE')
         )
