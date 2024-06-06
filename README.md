@@ -95,9 +95,9 @@ Les accès à l'entrepôt sont réalisés de deux manières:
 
 - Liens de téléchargement:
 
-  - [DuckDB CLI Windows](https://github.com/duckdb/duckdb/releases/download/v1.0.0/duckdb_cli-windows-amd64.zip)
-  - [DuckDB CLI macOS](https://github.com/duckdb/duckdb/releases/download/v1.0.0/duckdb_cli-osx-universal.zip)
-  - [DuckDB CLI Linux](https://github.com/duckdb/duckdb/releases/download/v1.0.0/duckdb_cli-linux-amd64.zip)
+  - DuckDB CLI Windows: https://github.com/duckdb/duckdb/releases/download/v1.0.0/duckdb_cli-windows-amd64.zip
+  - DuckDB CLI macOS: https://github.com/duckdb/duckdb/releases/download/v1.0.0/duckdb_cli-osx-universal.zip
+  - DuckDB CLI Linux: https://github.com/duckdb/duckdb/releases/download/v1.0.0/duckdb_cli-linux-amd64.zip
 
 - Execution sur une machine Windows:
 
@@ -137,4 +137,22 @@ D SELECT code_5,libelle_5,code_1,libelle_1 FROM collecte.naf LIMIT 5;
 └─────────┴────────────────────────────────────────────────────────────────────────────────────────┴─────────┴────────────────────────────────────┘
 
 D .quit
+```
+
+- Execution sur une machine Linux:
+
+```bash
+#!/bin/bash
+
+# Téléchargement DuckDB CLI, décompactage puis suppression du fichier compacté.
+
+cd <projet_dir>
+wget --no-check-certificate https://github.com/duckdb/duckdb/releases/download/v1.0.0/duckdb_cli-linux-amd64.zip && \
+unzip duckdb_cli-linux-amd64.zip && \
+rm duckdb_cli-linux-amd64.zip
+
+./duckdb ..\stockage\entrepot-emploi.duckdb
+v1.0.0 1f98600c2c
+Enter ".help" for usage hints.
+D
 ```
