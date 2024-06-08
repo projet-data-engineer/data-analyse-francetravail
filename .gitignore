@@ -12,11 +12,17 @@ airflow/logs/*
 airflow/plugins/*
 !airflow/plugins/.gitkeep
 
-donnees_brutes/collecte_offres_francetravail/*
-!donnees_brutes/collecte_offres_francetravail/.gitkeep
+donnees_brutes/offre_emploi/*
+!donnees_brutes/offre_emploi/.gitkeep
 
-donnees_brutes/collecte_nomenclature_rome_francetravail/*
-!donnees_brutes/collecte_nomenclature_rome_francetravail/.gitkeep
+donnees_brutes/cog_carto/*
+!donnees_brutes/cog_carto/.gitkeep
+
+donnees_brutes/sirene/*
+!donnees_brutes/sirene/.gitkeep
+
+donnees_brutes/rome/*
+!donnees_brutes/rome/.gitkeep
 
 duckdb_cli
 

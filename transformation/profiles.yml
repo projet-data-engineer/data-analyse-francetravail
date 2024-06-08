@@ -1,0 +1,9 @@
+transformation:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ..\stockage\entrepot.duckdb
+    prod:
+      type: duckdb
+      path: ..\stockage\entrepot.duckdb

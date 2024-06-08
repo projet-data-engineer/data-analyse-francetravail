@@ -2,29 +2,63 @@ import os
 import duckdb
 
 
-def chargement(chemin_donnees_brutes, chemin_fichier_donnees_brutes, chemin_stockage, nom_fichier_stockage):
+def chargement():
 
-    chemin_fichier_brut = os.path.join(chemin_donnees_brutes,chemin_fichier_donnees_brutes)
+    
 
-    with duckdb.connect(os.path.join(chemin_stockage, nom_fichier_stockage)) as con:
+    with duckdb.connect(os.getenv('DESTINATION_ENTREPOT')) as con:
 
         con.sql("CREATE SCHEMA IF NOT EXISTS collecte")
 
+        file_path = os.path.join(os.getenv('DESTINATION_ROME'), 'rome_domaine.json')
+
         SQL = f"""
-            CREATE OR REPLACE TABLE collecte.rome AS (
+            CREATE OR REPLACE TABLE collecte.rome_domaine AS (
                 SELECT
-                    code_1,
-                    libelle_1,
-                    code_2,
-                    libelle_2,
-                    code_3,
-                    libelle_3
+                    code,
+                    libelle
                 FROM 
-                    '{chemin_fichier_brut}/nomenclature_rome.json'
+                    '{file_path}'
             )
         """
 
         con.sql(SQL)
 
-        con.execute("SELECT COUNT(*) FROM collecte.rome")
+        con.execute("SELECT COUNT(*) FROM collecte.rome_domaine")
+        print(f"\n\n{con.fetchone()[0]} enregistrements chargés !\n\n")
+
+
+        file_path = os.path.join(os.getenv('DESTINATION_ROME'), 'rome_famille.json')
+
+        SQL = f"""
+            CREATE OR REPLACE TABLE collecte.rome_famille AS (
+                SELECT
+                    code,
+                    libelle
+                FROM 
+                    '{file_path}'
+            )
+        """
+
+        con.sql(SQL)
+
+        con.execute("SELECT COUNT(*) FROM collecte.rome_famille")
+        print(f"\n\n{con.fetchone()[0]} enregistrements chargés !\n\n")
+
+
+        file_path = os.path.join(os.getenv('DESTINATION_ROME'), 'rome_metier.json')
+
+        SQL = f"""
+            CREATE OR REPLACE TABLE collecte.rome_metier AS (
+                SELECT
+                    code,
+                    libelle
+                FROM 
+                    '{file_path}'
+            )
+        """
+
+        con.sql(SQL)
+
+        con.execute("SELECT COUNT(*) FROM collecte.rome_metier")
         print(f"\n\n{con.fetchone()[0]} enregistrements chargés !\n\n")

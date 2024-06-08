@@ -1,4 +1,3 @@
-import glob
 import requests
 import json
 import time
@@ -15,8 +14,6 @@ FRANCETRAVAIL_CLE_SECRETE = os.getenv("FRANCETRAVAIL_CLE_SECRETE")
 
 SEARCH_URL = f"{FRANCETRAVAIL_HOST}/partenaire/offresdemploi/v2/offres/search"
 REFERENTIEL_URL = f"{FRANCETRAVAIL_HOST}/partenaire/offresdemploi/v2/referentiel"
-
-#PATH_DONNEES_BRUTES = '/donnees_brutes'
 
 parisTz = pytz.timezone("Europe/Paris") 
 
@@ -216,7 +213,7 @@ def get_offres_metier_region(codeROME, region, minCreationDate, maxCreationDate,
                 else:
                     print(f"response is None ... {start}-{end}/{total}: {codeROME} {region}")
 
-def collecte_offres_date(chemin_donnees_brutes, date_creation):    
+def collecte_offres_date(date_creation):    
 
     minCreationDate = datetime \
         .strptime(date_creation, '%Y-%m-%d') \
@@ -247,7 +244,7 @@ def collecte_offres_date(chemin_donnees_brutes, date_creation):
 
     fin_total = time.time()
 
-    path = os.path.join(chemin_donnees_brutes, "collecte_offres_francetravail")
+    path = os.getenv('DESTINATION_OFFRE_EMPLOI')
     if not os.path.exists(path):
         os.mkdir(path)
 

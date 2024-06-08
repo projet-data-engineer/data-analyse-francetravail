@@ -1,14 +1,14 @@
 import os
 import duckdb
 
-def chargement(chemin_donnees_brutes, chemin_stockage, nom_fichier_stockage, date_creation):
+def chargement(date_creation):
 
-    path = os.path.join(chemin_donnees_brutes, "collecte_offres_francetravail")
-    file_path = f"{path}/offres-{date_creation}.json"
+    file_path = os.path.join(os.getenv('DESTINATION_OFFRE_EMPLOI'), f'offres-{date_creation}.json')
 
-    with duckdb.connect(os.path.join(chemin_stockage, nom_fichier_stockage)) as con:
+    with duckdb.connect(os.getenv('DESTINATION_ENTREPOT')) as con:
 
         con.sql("CREATE SCHEMA IF NOT EXISTS collecte")
+        con.sql("CREATE SCHEMA IF NOT EXISTS entrepot")
 
         SQL = f"""
             CREATE OR REPLACE TABLE collecte.raw_offre AS (

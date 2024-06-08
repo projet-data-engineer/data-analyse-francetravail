@@ -1,1 +1,3 @@
 duckdb
+dbt-duckdb
+py7zr

@@ -45,10 +45,8 @@ def get_data(url, access_token):
 
 
 
-def collecte(chemin_donnees_brutes, chemin_fichier_donnees_brutes):
+def collecte():
   
-    romes = []
-
     FRANCETRAVAIL_ID_CLIENT = os.getenv("FRANCETRAVAIL_ID_CLIENT")
     FRANCETRAVAIL_CLE_SECRETE = os.getenv("FRANCETRAVAIL_CLE_SECRETE")
 
@@ -59,29 +57,19 @@ def collecte(chemin_donnees_brutes, chemin_fichier_donnees_brutes):
     domaines = json.loads(get_data(url=f"{url_rome}/domaine-professionnel", access_token=access_token))
     metiers = json.loads(get_data(url=f"{url_rome}/metier", access_token=access_token))
 
-    for metier in metiers:
-        
-        rome = {}
-
-        grand_domaine = [data for data in familles if metier['code'][0] == data['code']]
-        domaine_professionnel = [data for data in domaines if metier['code'][0:3] == data['code']]
-
-        rome['code_1'] = grand_domaine[0]['code']
-        rome['libelle_1'] = grand_domaine[0]['libelle']
-        rome['code_2'] = domaine_professionnel[0]['code']
-        rome['libelle_2'] = domaine_professionnel[0]['libelle']
-        rome['code_3'] = metier['code']
-        rome['libelle_3'] = metier['libelle']
-
-        romes.append(rome)
-
-    path = os.path.join(chemin_donnees_brutes, chemin_fichier_donnees_brutes)
+    path = os.getenv('DESTINATION_ROME')
     if not os.path.exists(path):
         os.mkdir(path)
         
-    file_path = os.path.join(path, 'nomenclature_rome.json')
+    familles_path = os.path.join(path, 'rome_famille.json')
+    domaines_path = os.path.join(path, 'rome_domaine.json')
+    metiers_path = os.path.join(path, 'rome_metier.json')
 
-    with open(file_path, 'w') as output_file:
-        json.dump(romes, output_file, indent=2, ensure_ascii=False)
+    with open(familles_path, 'w') as output_file:
+        json.dump(familles, output_file, indent=2, ensure_ascii=False)
 
-    print(f"\nFin collecte de {len(romes)} enregistrements depuis api Rome francetravail.io\n")
+    with open(domaines_path, 'w') as output_file:
+        json.dump(domaines, output_file, indent=2, ensure_ascii=False)
+
+    with open(metiers_path, 'w') as output_file:
+        json.dump(metiers, output_file, indent=2, ensure_ascii=False)

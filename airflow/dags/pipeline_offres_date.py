@@ -4,8 +4,7 @@ from airflow import DAG
 import pendulum
 
 from airflow.decorators import dag, task
-from airflow.providers.docker.operators.docker import DockerOperator
-from airflow.operators.bash import BashOperator
+
 
 from collecte import collecte_offres
 from chargement import chargement_offres
@@ -26,28 +25,17 @@ Tous les jours à 01h00, requêtage api des offres créées J-1, puis chargement
 )
 def pipeline_offres_date():
 
-    # retourne <date_execution_dag> - 1 jour
     @task
     def date_creation(ds):
         return (datetime.strptime(ds, '%Y-%m-%d') + timedelta(days=-1)).strftime('%Y-%m-%d')
- 
+
     @task
     def collecte(date_creation):
-
-        collecte_offres.collecte_offres_date(
-            chemin_donnees_brutes=os.getenv('CHEMIN_DONNEES_BRUTES'), 
-            date_creation=date_creation
-        )
+        collecte_offres.collecte_offres_date(date_creation=date_creation)
 
     @task
     def chargement(date_creation):
-
-        chargement_offres.chargement(
-            chemin_donnees_brutes=os.getenv('CHEMIN_DONNEES_BRUTES'),
-            chemin_stockage=os.getenv('CHEMIN_STOCKAGE'),
-            nom_fichier_stockage=os.getenv('NOM_FICHIER_STOCKAGE'),
-            date_creation=date_creation
-        )
+        chargement_offres.chargement(date_creation=date_creation)
 
     _date_creation = date_creation()
     collecte(date_creation=_date_creation) >> chargement(date_creation=_date_creation)
