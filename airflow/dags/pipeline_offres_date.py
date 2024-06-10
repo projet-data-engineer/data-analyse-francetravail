@@ -18,7 +18,7 @@ Tous les jours à 01h00, requêtage api des offres créées J-1, puis chargement
 
 @dag(
     dag_id='pipeline_offres_date',
-    description='Collecte des offres de la veille TLJ à 01h00',
+    description='Collecte des offres créées J-1',
     schedule_interval='0 1 * * *',
     start_date=datetime(2024, 5, 23, tzinfo=local_tz),
     catchup=False

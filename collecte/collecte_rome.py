@@ -53,23 +53,23 @@ def collecte():
     access_token = authenticate(FRANCETRAVAIL_ID_CLIENT, FRANCETRAVAIL_CLE_SECRETE)
     url_rome = f"{os.getenv('FRANCETRAVAIL_HOST')}/partenaire/rome-metiers/v1/metiers"
 
-    familles = json.loads(get_data(url=f"{url_rome}/grand-domaine", access_token=access_token))
-    domaines = json.loads(get_data(url=f"{url_rome}/domaine-professionnel", access_token=access_token))
-    metiers = json.loads(get_data(url=f"{url_rome}/metier", access_token=access_token))
+    grand_domaine = json.loads(get_data(url=f"{url_rome}/grand-domaine", access_token=access_token))
+    domaine_professionnel = json.loads(get_data(url=f"{url_rome}/domaine-professionnel", access_token=access_token))
+    metier = json.loads(get_data(url=f"{url_rome}/metier", access_token=access_token))
 
     path = os.getenv('DESTINATION_ROME')
     if not os.path.exists(path):
         os.mkdir(path)
         
-    familles_path = os.path.join(path, 'rome_famille.json')
-    domaines_path = os.path.join(path, 'rome_domaine.json')
-    metiers_path = os.path.join(path, 'rome_metier.json')
+    grand_domaine_path = os.path.join(path, 'grand_domaine.json')
+    domaine_professionnel_path = os.path.join(path, 'domaine_professionnel.json')
+    metier_path = os.path.join(path, 'metier.json')
 
-    with open(familles_path, 'w') as output_file:
-        json.dump(familles, output_file, indent=2, ensure_ascii=False)
+    with open(grand_domaine_path, 'w') as output_file:
+        json.dump(grand_domaine, output_file, indent=2, ensure_ascii=False)
 
-    with open(domaines_path, 'w') as output_file:
-        json.dump(domaines, output_file, indent=2, ensure_ascii=False)
+    with open(domaine_professionnel_path, 'w') as output_file:
+        json.dump(domaine_professionnel, output_file, indent=2, ensure_ascii=False)
 
-    with open(metiers_path, 'w') as output_file:
-        json.dump(metiers, output_file, indent=2, ensure_ascii=False)
+    with open(metier_path, 'w') as output_file:
+        json.dump(metier, output_file, indent=2, ensure_ascii=False)

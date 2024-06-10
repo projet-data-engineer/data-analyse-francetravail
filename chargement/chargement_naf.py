@@ -5,92 +5,94 @@ def chargement():
 
     with duckdb.connect(os.getenv('DESTINATION_ENTREPOT')) as con:
 
+        con.sql("CREATE SCHEMA IF NOT EXISTS collecte")
+        
         # hierarchie
         con.sql( f"""
                 
-            CREATE OR REPLACE TABLE collecte.naf_hierarchie AS (
+            CREATE OR REPLACE TABLE collecte.naf2008_5_niveaux AS (
                 SELECT
                     *
                 FROM 
-                    '{os.getenv('DESTINATION_NAF')}/hierarchie.csv'
+                    '{os.getenv('DESTINATION_NAF')}/naf2008_5_niveaux.csv'
             )
 
         """
         )
-        con.execute("SELECT COUNT(*) FROM collecte.naf_hierarchie")
-        print(f"\n\nnaf_hierarchie: chargement de {con.fetchone()[0]} enregistrements !\n\n")
+        con.execute("SELECT COUNT(*) FROM collecte.naf2008_5_niveaux")
+        print(f"naf2008_5_niveaux: chargement de {con.fetchone()[0]} enregistrements !")
 
         # Niveau 1
         con.sql( f"""
                 
-            CREATE OR REPLACE TABLE collecte.naf_niveau_1 AS (
+            CREATE OR REPLACE TABLE collecte.naf2008_liste_n1 AS (
                 SELECT
                     *
                 FROM 
-                    '{os.getenv('DESTINATION_NAF')}/niveau_1.csv'
+                    '{os.getenv('DESTINATION_NAF')}/naf2008_liste_n1.csv'
             )
 
         """
         )
-        con.execute("SELECT COUNT(*) FROM collecte.naf_niveau_1")
-        print(f"\n\nnaf_niveau_1: chargement de {con.fetchone()[0]} enregistrements!\n\n")
+        con.execute("SELECT COUNT(*) FROM collecte.naf2008_liste_n1")
+        print(f"naf2008_liste_n1: chargement de {con.fetchone()[0]} enregistrements !")
 
         # Niveau 2
         con.sql( f"""
                 
-            CREATE OR REPLACE TABLE collecte.naf_niveau_2 AS (
+            CREATE OR REPLACE TABLE collecte.naf2008_liste_n2 AS (
                 SELECT
                     *
                 FROM 
-                    '{os.getenv('DESTINATION_NAF')}/niveau_2.csv'
+                    '{os.getenv('DESTINATION_NAF')}/naf2008_liste_n2.csv'
             )
 
         """
         )
-        con.execute("SELECT COUNT(*) FROM collecte.naf_niveau_2")
-        print(f"\n\nnaf_niveau_2: chargement de {con.fetchone()[0]} enregistrements!\n\n")
+        con.execute("SELECT COUNT(*) FROM collecte.naf2008_liste_n2")
+        print(f"naf2008_liste_n2: chargement de {con.fetchone()[0]} enregistrements !")
 
         # Niveau 3
         con.sql( f"""
                 
-            CREATE OR REPLACE TABLE collecte.naf_niveau_3 AS (
+            CREATE OR REPLACE TABLE collecte.naf2008_liste_n3 AS (
                 SELECT
                     *
                 FROM 
-                    '{os.getenv('DESTINATION_NAF')}/niveau_3.csv'
+                    '{os.getenv('DESTINATION_NAF')}/naf2008_liste_n3.csv'
             )
 
         """
         )
-        con.execute("SELECT COUNT(*) FROM collecte.naf_niveau_3")
-        print(f"\n\nnaf_niveau_3: chargement de {con.fetchone()[0]} enregistrements!\n\n")
+        con.execute("SELECT COUNT(*) FROM collecte.naf2008_liste_n3")
+        print(f"naf2008_liste_n3: chargement de {con.fetchone()[0]} enregistrements !")
 
         # Niveau 4
         con.sql( f"""
                 
-            CREATE OR REPLACE TABLE collecte.naf_niveau_4 AS (
+            CREATE OR REPLACE TABLE collecte.naf2008_liste_n4 AS (
                 SELECT
                     *
                 FROM 
-                    '{os.getenv('DESTINATION_NAF')}/niveau_4.csv'
+                    '{os.getenv('DESTINATION_NAF')}/naf2008_liste_n4.csv'
             )
 
         """
         )
-        con.execute("SELECT COUNT(*) FROM collecte.naf_niveau_4")
-        print(f"\n\nnaf_niveau_4: chargement de {con.fetchone()[0]} enregistrements!\n\n")
+        con.execute("SELECT COUNT(*) FROM collecte.naf2008_liste_n4")
+        print(f"naf2008_liste_n4: chargement de {con.fetchone()[0]} enregistrements !")
 
         # Niveau 5
         con.sql( f"""
                 
-            CREATE OR REPLACE TABLE collecte.naf_niveau_5 AS (
+            CREATE OR REPLACE TABLE collecte.naf2008_liste_n5 AS (
                 SELECT
                     *
                 FROM 
-                    '{os.getenv('DESTINATION_NAF')}/niveau_5.csv'
+                    '{os.getenv('DESTINATION_NAF')}/naf2008_liste_n5.csv'
             )
 
         """
         )
-        con.execute("SELECT COUNT(*) FROM collecte.naf_niveau_5")
-        print(f"\n\nnaf_niveau_5: chargement de {con.fetchone()[0]} enregistrements!\n\n")
+        con.execute("SELECT COUNT(*) FROM collecte.naf2008_liste_n5")
+        print(f"naf2008_liste_n5: chargement de {con.fetchone()[0]} enregistrements !")

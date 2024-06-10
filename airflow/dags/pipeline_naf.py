@@ -9,7 +9,7 @@ local_tz = pendulum.timezone("Europe/Paris")
 
 @dag(
     dag_id='pipeline_naf',
-    description='Chargement dans entrepôt DuckDB nomenclature NAF (5 niveaux dénormalisés)',
+    description='Chargement dans entrepôt DuckDB nomenclature NAF',
     schedule=None,
     start_date=datetime(2024, 5, 23, tzinfo=local_tz),
     catchup=False

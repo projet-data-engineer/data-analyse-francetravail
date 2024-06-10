@@ -22,9 +22,7 @@ def chargement(version):
             CREATE OR REPLACE TABLE collecte.cog_carto_region AS (
                 SELECT
                     '{version}' AS version,
-                    shp.insee_reg AS code,
-                    shp.nom,
-                    shp.geom
+                    shp.*
                 FROM 
                     '{shp_region}' AS shp
             )
@@ -40,10 +38,7 @@ def chargement(version):
             CREATE OR REPLACE TABLE collecte.cog_carto_departement AS (
                 SELECT
                     '{version}' AS version,
-                    shp.insee_dep AS code,
-                    shp.insee_reg AS code_region,
-                    shp.nom,
-                    shp.geom
+                    shp.*
                 FROM 
                     '{shp_departement}' AS shp
             )
@@ -59,13 +54,7 @@ def chargement(version):
             CREATE OR REPLACE TABLE collecte.cog_carto_commune AS (
                 SELECT
                     '{version}' AS version,
-                    shp.insee_com AS code,
-                    shp.insee_reg AS code_region,
-                    shp.insee_dep AS code_departement,
-                    shp.nom,
-                    shp.statut,
-                    shp.population,                    
-                    shp.geom
+                    shp.*
                 FROM 
                     '{shp_commune}' AS shp
             )
@@ -81,11 +70,7 @@ def chargement(version):
             CREATE OR REPLACE TABLE collecte.cog_carto_arrondissement_municipal AS (
                 SELECT
                     '{version}' AS version,
-                    shp.insee_arm AS code,
-                    shp.insee_com AS code_commune,                    
-                    shp.nom,
-                    shp.population,
-                    shp.geom
+                    shp.*
                 FROM 
                     '{shp_arrondissement_municipal}' AS shp
             )

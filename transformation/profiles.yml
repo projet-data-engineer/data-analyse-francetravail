@@ -4,6 +4,8 @@ transformation:
     dev:
       type: duckdb
       path: ..\stockage\entrepot.duckdb
+      schema: emploi
     prod:
       type: duckdb
       path: ..\stockage\entrepot.duckdb
+      schema: emploi

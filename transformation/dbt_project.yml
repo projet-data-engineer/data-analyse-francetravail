@@ -1,4 +1,3 @@
-
 name: 'transformation'
 version: '1.0.0'
 profile: 'transformation'
@@ -14,6 +13,14 @@ clean-targets:
 
 models:
   transformation:
-    # Config indicated by + and applies to all files under models/example/
-    example:
-      +materialized: view
+  
+    dim_naf:
+      +materialized: table
+    dim_lieu:
+      +materialized: table
+    dim_lieu_activite:
+      +materialized: table
+    dim_rome:
+      +materialized: table
+    fait_offre_emploi:
+      +materialized: table

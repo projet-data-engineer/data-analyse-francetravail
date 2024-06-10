@@ -18,7 +18,7 @@ def chargement(yyyy_mm):
         con.sql("CREATE SCHEMA IF NOT EXISTS collecte")
 
         SQL = f"""
-            CREATE OR REPLACE TABLE collecte.etablissement AS (
+            CREATE OR REPLACE TABLE collecte.sirene_etablissement AS (
                 SELECT
                     '{yyyy_mm}' AS version, e.*
                 FROM 
@@ -30,7 +30,7 @@ def chargement(yyyy_mm):
 
         con.sql(SQL)
 
-        con.execute("SELECT COUNT(*) FROM collecte.etablissement")
+        con.execute("SELECT COUNT(*) FROM collecte.sirene_etablissement")
         print(f"\n\n{con.fetchone()[0]} enregistrements chargés !\n\n")
 
     os.remove(csv)

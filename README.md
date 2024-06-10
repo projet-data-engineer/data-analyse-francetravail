@@ -175,50 +175,67 @@ transformation:
   outputs:
     dev:
       type: duckdb
-      path: ..\stockage\entrepot-emploi.duckdb
+      path: ..\stockage\entrepot.duckdb
+      schema: entrepot
     prod:
       type: duckdb
-      path: ..\stockage\entrepot-emploi.duckdb
+      path: ..\stockage\entrepot.duckdb
+      schema: entrepot
 ```
 
 - Tester la connexion avec la commande dbt debug qui doit se terminer par le message *All checks passed!*
 
 ```powershell
+
+cd .\transformation\
+
+# Tester la configuration; Doit se terminer par le message "All checks passed!"
 dbt debug
-10:21:10  Running with dbt=1.8.2
-10:21:10  dbt version: 1.8.2
-10:21:10  python version: 3.10.11
-10:21:10  python path: C:\privé\DE\data-analyse-francetravail\.venv\Scripts\python.exe
-10:21:10  os info: Windows-10-10.0.19044-SP0
-10:21:10  Using profiles dir at C:\privé\DE\data-analyse-francetravail\transformation
-10:21:10  Using profiles.yml file at C:\privé\DE\data-analyse-francetravail\transformation\profiles.yml      
-10:21:10  Using dbt_project.yml file at C:\privé\DE\data-analyse-francetravail\transformation\dbt_project.yml
-10:21:10  adapter type: duckdb
-10:21:10  adapter version: 1.8.1
-10:21:10  Configuration:
-10:21:10    profiles.yml file [OK found and valid]
-10:21:10    dbt_project.yml file [OK found and valid]
-10:21:10  Required dependencies:
-10:21:10   - git [OK found]
 
-10:21:10  Connection:
-10:21:10    database: entrepot-emploi
-10:21:10    schema: main
-10:21:10    path: ..\stockage\entrepot-emploi.duckdb
-10:21:10    config_options: None
-10:21:10    extensions: None
-10:21:10    settings: None
-10:21:10    external_root: .
-10:21:10    use_credential_provider: None
-10:21:10    attach: None
-10:21:10    filesystems: None
-10:21:10    remote: None
-10:21:10    plugins: None
-10:21:10    disable_transactions: False
-10:21:10  Registered adapter: duckdb=1.8.1
-10:21:12    Connection test: [OK connection ok]
+07:48:42  Running with dbt=1.8.2
+07:48:42  dbt version: 1.8.2
+07:48:42  python version: 3.10.11
+07:48:42  python path: C:\privé\DE\data-analyse-francetravail\.venv\Scripts\python.exe
+07:48:42  os info: Windows-10-10.0.19044-SP0
+07:48:43  Using profiles dir at C:\privé\DE\data-analyse-francetravail\transformation
+07:48:43  Using profiles.yml file at C:\privé\DE\data-analyse-francetravail\transformation\profiles.yml
+07:48:43  Using dbt_project.yml file at C:\privé\DE\data-analyse-francetravail\transformation\dbt_project.yml
+07:48:43  adapter type: duckdb
+07:48:43  adapter version: 1.8.1
+07:48:43  Configuration:
+07:48:43    profiles.yml file [OK found and valid]
+07:48:43    dbt_project.yml file [OK found and valid]
+07:48:43  Required dependencies:
+07:48:43   - git [OK found]
 
-10:21:12  All checks passed!
+07:48:43  Connection:
+07:48:43    database: entrepot
+07:48:43    schema: entrepot
+07:48:43    path: ..\stockage\entrepot.duckdb
+07:48:43    config_options: None
+07:48:43    extensions: None
+07:48:43    settings: None
+07:48:43    external_root: .
+07:48:43    use_credential_provider: None
+07:48:43    attach: None
+07:48:43    filesystems: None
+07:48:43    remote: None
+07:48:43    plugins: None
+07:48:43    disable_transactions: False
+07:48:43  Registered adapter: duckdb=1.8.1
+07:48:43    Connection test: [OK connection ok]
+
+07:48:43  All checks passed!
+
+# Générer la documentation DBT
+dbt docs generate
+
+# Executer le site web local de documentation
+dbt docs serve
+
+# Execution des models DBT, construction de l'entrepôt
+dbt run
+
 ```
 
 ### Pipelines de données & ordonnacement avec Apache Airflow
@@ -259,15 +276,18 @@ Exemple d'item de nomenclature ROME:
 
 - Fichier de DAG: ./airflow/dags/pipeline_nomenclature_naf.py
 - Programmation: éxecution manuelle
-- Description: chargement dans entrepôt DuckDB nomenclature NAF (5 niveaux dénormalisés)
-- Source:
+- Description: Chargement des fichiers CSV de la Nomenclature d’activités française – NAF rév. 2
+- Source: (<https://www.insee.fr/fr/information/2120875>)
+  - Format: Excel
+  - Téléchargement des 6 fichiers suivants: Sections, Divisions, Groupes, Classes, Sous-classes, Les 5 niveaux emboîtés
+  - Les fichiers Excel sont légèrement retravaillés pour les rendre compatibles au format CSV
+  - Export CSV des 6 fichiers Excel dans le dossier donnees_brutes/naf
 
 #### pipeline_etablissements_sirene
 
 - Fichier de DAG: ./airflow/dags/pipeline_etablissements_sirene.py
 - Programmation: éxecution mensuelle, le 1er de chaque mois
 - Description: chargement dans entrepôt DuckDB nomenclature NAF (5 niveaux dénormalisés)
-- Source:
 
 ## Requêtage de l'entrepôt DuckDB
 
@@ -299,11 +319,9 @@ Enter ".help" for usage hints.
 D
 ```
 
-- Quelques exemples de requêtes
+- Quelques exemples de requêtes de découverte de l'entrepôt de données
 
 ```powershell
-D SHOW ALL TABLES; 
-
 D SELECT COUNT(*) FROM collecte.raw_offre;
 ┌──────────────┐
 │ count_star() │
@@ -311,6 +329,104 @@ D SELECT COUNT(*) FROM collecte.raw_offre;
 ├──────────────┤
 │        38199 │
 └──────────────┘
+
+D SELECT database_name, path FROM duckdb_databases();
+┌───────────────┬─────────────────────────────┐
+│ database_name │            path             │
+│    varchar    │           varchar           │
+├───────────────┼─────────────────────────────┤
+│ entrepot      │ ..\stockage\entrepot.duckdb │
+│ system        │                             │
+│ temp          │                             │
+└───────────────┴─────────────────────────────┘
+
+D SELECT schema_name,table_name,column_count FROM duckdb_tables();
+┌─────────────┬────────────────────────────────────┬──────────────┐
+│ schema_name │             table_name             │ column_count │
+│   varchar   │              varchar               │    int64     │
+├─────────────┼────────────────────────────────────┼──────────────┤
+│ collecte    │ cog_carto_arrondissement_municipal │            6 │
+│ collecte    │ cog_carto_commune                  │            8 │
+│ collecte    │ cog_carto_departement              │            5 │
+│ collecte    │ cog_carto_region                   │            4 │
+│ collecte    │ etablissement                      │           54 │
+│ collecte    │ naf                                │           10 │
+│ collecte    │ naf_hierarchie                     │            5 │
+│ collecte    │ naf_niveau_1                       │            2 │
+│ collecte    │ naf_niveau_2                       │            2 │
+│ collecte    │ naf_niveau_3                       │            2 │
+│ collecte    │ naf_niveau_4                       │            2 │
+│ collecte    │ naf_niveau_5                       │            2 │
+│ collecte    │ raw_offre                          │           16 │
+│ collecte    │ rome                               │            6 │
+│ collecte    │ rome_domaine                       │            2 │
+│ collecte    │ rome_famille                       │            2 │
+│ collecte    │ rome_metier                        │            2 │
+├─────────────┴────────────────────────────────────┴──────────────┤
+│ 17 rows                                               3 columns │
+└─────────────────────────────────────────────────────────────────┘
+
+D SELECT schema_name, table_name FROM duckdb_tables() WHERE schema_name = 'entrepot'; 
+┌─────────────┬────────────┐
+│ schema_name │ table_name │
+│   varchar   │  varchar   │
+├─────────────┼────────────┤
+│ entrepot    │ dim_naf    │
+└─────────────┴────────────┘
+
+D SELECT database_name, schema_name FROM duckdb_schemas(); 
+┌───────────────┬────────────────────┐
+│ database_name │    schema_name     │
+│    varchar    │      varchar       │
+├───────────────┼────────────────────┤
+│ entrepot      │ collecte           │
+│ entrepot      │ entrepot           │
+│ entrepot      │ information_schema │
+│ entrepot      │ main               │
+│ entrepot      │ pg_catalog         │
+│ system        │ information_schema │
+│ system        │ main               │
+│ system        │ pg_catalog         │
+│ temp          │ information_schema │
+│ temp          │ main               │
+│ temp          │ pg_catalog         │
+├───────────────┴────────────────────┤
+│ 11 rows                  2 columns │
+└────────────────────────────────────┘
+
+D SELECT schema_name, view_name FROM duckdb_views() WHERE schema_name in ('entrepot', 'collecte');
+┌─────────────┬───────────┐
+│ schema_name │ view_name │
+│   varchar   │  varchar  │
+├─────────────┼───────────┤
+│ entrepot    │ dim_naf   │
+└─────────────┴───────────┘ 
+
+D describe table collecte.cog_carto_commune;
+┌─────────────┬─────────────┬─────────┬─────────┬─────────┬─────────┐
+│ column_name │ column_type │  null   │   key   │ default │  extra  │
+│   varchar   │   varchar   │ varchar │ varchar │ varchar │ varchar │
+├─────────────┼─────────────┼─────────┼─────────┼─────────┼─────────┤
+│ version     │ VARCHAR     │ YES     │         │         │         │
+│ ID          │ VARCHAR     │ YES     │         │         │         │
+│ NOM         │ VARCHAR     │ YES     │         │         │         │
+│ NOM_M       │ VARCHAR     │ YES     │         │         │         │
+│ INSEE_COM   │ VARCHAR     │ YES     │         │         │         │
+│ STATUT      │ VARCHAR     │ YES     │         │         │         │
+│ POPULATION  │ INTEGER     │ YES     │         │         │         │
+│ INSEE_CAN   │ VARCHAR     │ YES     │         │         │         │
+│ INSEE_ARR   │ VARCHAR     │ YES     │         │         │         │
+│ INSEE_DEP   │ VARCHAR     │ YES     │         │         │         │
+│ INSEE_REG   │ VARCHAR     │ YES     │         │         │         │
+│ SIREN_EPCI  │ VARCHAR     │ YES     │         │         │         │
+│ geom        │ GEOMETRY    │ YES     │         │         │         │
+├─────────────┴─────────────┴─────────┴─────────┴─────────┴─────────┤
+│ 13 rows                                                 6 columns │
+└───────────────────────────────────────────────────────────────────┘
+
+
+
+SELECT schema_name,table_name,column_count FROM duckdb_tables();  
 
 D SELECT code_5,libelle_5,code_1,libelle_1 FROM collecte.naf LIMIT 5;
 ┌─────────┬────────────────────────────────────────────────────────────────────────────────────────┬─────────┬────────────────────────────────────┐

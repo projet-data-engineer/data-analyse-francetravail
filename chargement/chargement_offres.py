@@ -8,32 +8,16 @@ def chargement(date_creation):
     with duckdb.connect(os.getenv('DESTINATION_ENTREPOT')) as con:
 
         con.sql("CREATE SCHEMA IF NOT EXISTS collecte")
-        con.sql("CREATE SCHEMA IF NOT EXISTS entrepot")
 
         SQL = f"""
-            CREATE OR REPLACE TABLE collecte.raw_offre AS (
+            CREATE OR REPLACE TABLE collecte.offre_emploi AS (
                 SELECT
-                    id,
-                    CAST(dateCreation AS DATE) AS dateCreation,
-                    lieuTravail.commune,
-                    lieuTravail.latitude,
-                    lieuTravail.longitude,
-                    codeNAF,
-                    romeCode,
-                    entreprise.entrepriseAdaptee,
-                    typeContrat,
-                    natureContrat,
-                    experienceExige,
-                    alternance,
-                    nombrePostes,
-                    accessibleTH,
-                    CAST(qualificationCode AS VARCHAR) AS qualificationCode,
-                    qualificationLibelle
+                    *
                 FROM 
                     '{file_path}'
             )
         """
         con.sql(SQL)
 
-        con.execute("SELECT COUNT(*) FROM collecte.raw_offre")    
+        con.execute("SELECT COUNT(*) FROM collecte.offre_emploi")    
         print(f"\n\n{con.fetchone()[0]} enregistrements chargés !\n\n")
