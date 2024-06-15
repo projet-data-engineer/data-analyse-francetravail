@@ -190,16 +190,30 @@ models:
         description: Population de la commune ou de l'arrondissement municipal
       - name: frontiere
         description: Limite géographique de la commune ou de l'arrondissement municipal
-      - name: code_dep
-        description: Code du département de la commune ou de l'arrondissement municipal
-      - name: nom_dep
-        description: Libellé du département de la commune ou de l'arrondissement municipal
-      - name: code_reg
-        description: Code de la région de la commune ou de l'arrondissement municipal
-      - name: nom_reg
-        description: Libellé de la région de la commune ou de l'arrondissement municipal
-      - name: frontiere_reg
-        description: Limite géographique de la région de la commune ou de l'arrondissement municipal
+
+  - name: region
+    description: Régions avec limites géographiques
+    columns:
+      - name: version
+        description: version. Format YYYY-MM-DD
+      - name: code
+        description: Code de la région
+      - name: nom
+        description: Libellé de la région
+      - name: frontiere
+        description: Limite géographique de la région
+
+  - name: departement
+    description: Régions avec limites géographiques
+    columns:
+      - name: version
+        description: version. Format YYYY-MM-DD
+      - name: code
+        description: Code du département
+      - name: nom
+        description: Libellé du département
+      - name: frontiere
+        description: Limite géographique du département
 
   - name: dim_lieu_activite
     description: Dimension comptabilisation du nombre d'établissements pour une commune et une activité donnée
