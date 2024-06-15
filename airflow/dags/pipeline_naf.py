@@ -1,5 +1,4 @@
 from datetime import datetime
-import os
 import pendulum
 
 from airflow.decorators import dag, task

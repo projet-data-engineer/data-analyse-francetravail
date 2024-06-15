@@ -1,6 +1,5 @@
 import os
 import duckdb
-import shutil
 
 def chargement(version):
 

@@ -1,7 +1,6 @@
 import os
 import duckdb
 
-
 def chargement():
 
     with duckdb.connect(os.getenv('DESTINATION_ENTREPOT')) as con:
