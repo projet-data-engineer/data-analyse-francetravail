@@ -82,6 +82,75 @@ D SELECT database_name, schema_name FROM duckdb_schemas();
 │ 11 rows                  2 columns │
 ```
 
+## Chargement manuel d'un fichier de collecte d'offres d'emploi
+
+```powershell
+.\duckdb.exe ..\stockage\entrepot-emploi.duckdb
+v1.0.0 1f98600c2c
+Enter ".help" for usage hints.
+
+# Compabilisation nb offres total dans l'emsemble des fichiers d'offre collectés
+D SELECT COUNT(*) FROM '..\donnees_brutes\offre_emploi\*.json';
+┌──────────────┐
+│ count_star() │
+│    int64     │
+├──────────────┤
+│       503660 │
+└──────────────┘
+
+D SELECT COUNT(*) FROM '..\donnees_brutes\offre_emploi\offres-2024-06-07.json'; 
+┌──────────────┐
+│ count_star() │
+│    int64     │
+├──────────────┤
+│        47310 │
+└──────────────┘
+
+# Pour afficher le temps d'execution des requêtes
+D .timer on
+
+D CREATE OR REPLACE TABLE collecte.offre_emploi AS (
+    SELECT
+        *
+    FROM 
+        '..\donnees_brutes\offre_emploi\*.json'
+);
+Run Time (s): real 8.320 user 23.468750 sys 3.843750
+
+D SELECT COUNT(*) FROM collecte.offre_emploi;
+┌──────────────┐
+│ count_star() │
+│    int64     │
+├──────────────┤
+│       503660 │
+└──────────────┘
+
+D .quit
+```
+
+- Executer DBT
+
+```powershell
+cd .\transformation\
+dbt run
+
+10:11:03  1 of 7 START sql view model emploi.departement ................................. [RUN]
+10:11:03  1 of 7 OK created sql view model emploi.departement ............................ [OK in 0.27s]
+10:11:03  2 of 7 START sql table model emploi.dim_lieu ................................... [RUN]
+10:11:04  2 of 7 OK created sql table model emploi.dim_lieu .............................. [OK in 1.12s]
+10:11:04  3 of 7 START sql table model emploi.dim_lieu_activite .......................... [RUN]
+10:11:05  3 of 7 OK created sql table model emploi.dim_lieu_activite ..................... [OK in 1.28s]
+10:11:05  4 of 7 START sql table model emploi.dim_naf .................................... [RUN]
+10:11:05  4 of 7 OK created sql table model emploi.dim_naf ............................... [OK in 0.21s]
+10:11:05  5 of 7 START sql table model emploi.dim_rome ................................... [RUN]
+10:11:06  5 of 7 OK created sql table model emploi.dim_rome .............................. [OK in 0.21s]
+10:11:06  6 of 7 START sql table model emploi.fait_offre_emploi .......................... [RUN]
+10:11:06  6 of 7 OK created sql table model emploi.fait_offre_emploi ..................... [OK in 0.45s]
+10:11:06  7 of 7 START sql view model emploi.region ...................................... [RUN]
+10:11:06  7 of 7 OK created sql view model emploi.region ................................. [OK in 0.18s]
+```
+
+
 ## DBeaver
 
 - [Téléchargement DBeaver](https://dbeaver.io/download/)

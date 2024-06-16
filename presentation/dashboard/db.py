@@ -1,6 +1,7 @@
 import duckdb
 import pandas as pd
 from contextlib import contextmanager
+import pandas as pd
 
 class Db:
 
@@ -20,22 +21,30 @@ class Db:
         finally:
             if con:
                 con.close()
-
-    def get_dim_rome(self):
+    
+    def get_nb_offre_famille_metier(self) -> pd.DataFrame:
 
         query = f"""
 
             SELECT
-                *
+                rome.code_1 AS code, 
+                rome.libelle_1 AS libelle,
+                COUNT(*) AS nombre
             FROM
-                emploi.dim_rome
+                entrepot.emploi.fait_offre_emploi AS offre
+            JOIN
+                entrepot.emploi.dim_rome AS rome 
+            ON
+                offre.code_rome = rome.code_3
+            GROUP BY 
+                rome.code_1,rome.libelle_1
             ORDER BY
-                code_3
+                COUNT(*) DESC 
 
         """
 
         with self._connect() as con:
             con.execute(query)
-            data = con.cursor().execute(query).df().to_dict('records')
+            data = con.cursor().execute(query).df()
 
         return data

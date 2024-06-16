@@ -18,6 +18,10 @@ models:
       +materialized: table
     dim_lieu:
       +materialized: table
+    region:
+      +materialized: table
+    departement:
+      +materialized: table
     dim_lieu_activite:
       +materialized: table
     dim_rome:

@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 import sys
 sys.path.append('..')
-from commun.db import Db
-from commun.models import Rome
+from db import Db
+from models import Rome
 
 router = APIRouter()
 

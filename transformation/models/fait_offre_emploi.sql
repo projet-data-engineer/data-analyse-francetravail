@@ -1,3 +1,14 @@
+{{
+    config(
+        materialized='incremental'
+    )
+}}
+
+WITH offre AS (
+
+    SELECT * FROM {{ source('collecte_offre_emploi', 'offre_emploi') }}
+)
+
 SELECT
     offre.id,
     CAST(offre.dateCreation AS DATE) AS date_creation,
@@ -15,4 +26,11 @@ SELECT
     offre.accessibleTH AS accessible_TH,
     CAST(offre.qualificationCode AS VARCHAR) AS qualification_code
 FROM
-    {{ source('collecte_offre_emploi', 'offre_emploi') }} as offre
+    offre
+
+{% if is_incremental() %}
+
+  WHERE 
+    CAST(offre.dateCreation AS DATE) > ( SELECT MAX(date_creation) FROM {{ this }} )
+
+{% endif %}
