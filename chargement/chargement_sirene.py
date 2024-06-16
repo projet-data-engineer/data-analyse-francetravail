@@ -4,7 +4,7 @@ from zipfile import ZipFile
 
 def decompactage(yyyy_mm):
 
-    nom_archive=f"{os.getenv('DESTINATION_SIRENE')}/sirene_{yyyy_mm}.zip"
+    nom_archive=f"{os.getenv('DESTINATION_SIRENE')}/etablissements_sirene_{yyyy_mm}.zip"
 
     with ZipFile(nom_archive, 'r') as f:
         f.extractall(path=os.getenv('DESTINATION_SIRENE'))

@@ -25,7 +25,7 @@ def pipeline_sirene():
     @task
     def telechargement_stock_etablissement(yyyy_mm):
 
-        nom_archive=f"{os.getenv('DESTINATION_SIRENE')}/sirene_{yyyy_mm}.zip"
+        nom_archive=f"{os.getenv('DESTINATION_SIRENE')}/etablissements_sirene_{yyyy_mm}.zip"
 
         if not os.path.exists(nom_archive):
             print(f"Le fichier {nom_archive} absent. Téléchargement stock Sirene {yyyy_mm}...")
