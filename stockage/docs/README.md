@@ -22,7 +22,7 @@ Les accès à l'entrepôt sont réalisés de deux manières:
   - Lancer la CLI en indiquant le chemin vers le fichier de persistence DuckDB
 
 ```powershell
-.\duckdb.exe ..\stockage\entrepot-emploi.duckdb
+.\duckdb.exe ..\stockage\entrepot.duckdb
 v1.0.0 1f98600c2c
 Enter ".help" for usage hints.
 
